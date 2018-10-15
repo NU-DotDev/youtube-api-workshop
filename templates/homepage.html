@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <title>Youtube Playlist Generator</title>
 </head>
 
@@ -39,16 +39,27 @@
                 <button class="btn btn-info btn-lg btn-block">Generate Playlist</button>
             </div>
         </form>
-    </div>
-    <div class="container" id="content">
-        <div class="row h-100 mt-5">
-            <header>
-                {% block header %}{% endblock %}
-            </header>
-            {% for link in youtube_links %}
-            <div class="flash">{{ link }}</div>
-            {% endfor %}
-            {% block content %}{% endblock %}
+        <div>
+            <div class="row h-100 mt-5">
+                {% if youtube_links %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Generated Playlist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for link in youtube_links %}
+                        <tr>
+                            <td>
+                                <div class="span4">{{ link }}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
         </div>
     </div>
     <!-- Optional JavaScript -->

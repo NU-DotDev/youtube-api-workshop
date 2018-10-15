@@ -3,7 +3,7 @@
 import os
 
 import flask
-from flask import request
+from flask import request, render_template
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -66,12 +66,10 @@ def index():
 
   client = googleapiclient.discovery.build(
       API_SERVICE_NAME, API_VERSION, credentials=credentials)
-
+  links = []
   if request.method == 'POST':
     links = handle_search_request(client, request.form)
-    return render_template('homepage.html', youtube_links=links)
-
-  return 'Hello'
+  return render_template('homepage.html', youtube_links=links)
 
 @app.route('/authorize')
 def authorize():
