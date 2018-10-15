@@ -1,9 +1,3 @@
-def handle_post(keywords, playlist_name, playlist_description=''):
-  video_ids = search_youtube(keywords)
-
-
-
-
 def search_youtube(client, search_phrase, count=1):
   """Returns the top video id for a keyword (search phrase)
   param: search_phrase, string: Youtube search term
@@ -30,7 +24,7 @@ def search_youtube(client, search_phrase, count=1):
     video_list.append(search_result['items'][i]['id']['videoId'])
 
   # return the list of video IDs 
-  return str(video_list)
+  return video_list
 
 def create_youtube_links(video_ids):
   """Returns a list of youtube links for given video ids
@@ -64,11 +58,11 @@ def create_playlist(client, playlist_name, playlist_description=''):
       # Name the playlist playlist_name.
       'title': playlist_name,
       # Give it the description we want.
-      'description': description
+      'description': playlist_description
     },
     'status': {
       # Make the playlist unlisted by default.
-      'privacyStatus': 'unlisted'
+      'privacyStatus': 'public'
     }
   }
   # Call the insert operation on the YouTube API, using the request object we just created.
@@ -110,9 +104,10 @@ def insert_videos_into_playlist(client, playlist_id, video_ids=[]):
     # Call the insert operation on the YouTube API, using the request object we just created.
     # See: https://developers.google.com/youtube/v3/docs/playlistItems/insert
     insert_video_response = client.playlistItems().insert(
-      part='snippet'
-      body=insert_video_request_body,
+      part='snippet',
+      body=insert_video_request_body
     ).execute()
+
 
   # If all goes well, there should be no errors, and our requests were successful.
   return

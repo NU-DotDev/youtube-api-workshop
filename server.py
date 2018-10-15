@@ -3,11 +3,12 @@
 import os
 
 import flask
+from flask import request
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
-from playlist_gen import search_youtube
+import playlist_gen
 
 """
 *************************************************
@@ -43,16 +44,18 @@ app = flask.Flask(__name__)
 # key. See http://flask.pocoo.org/docs/0.12/quickstart/#sessions.
 app.secret_key = 'DotDevYoutubeWorkshop'
 
-def handle_search_request(client, request_data):
-  print(request_data)
-  playlist_name = request_data['playlist_name']
-  video_ids = search_youtube(client, keywords)
-  playlist_id = create_playlist(client, playlist_name, playlist_description)
-  insert_videos_into_playlist(client, playlist_id, video_ids)
-  web_links = create_youtube_links(video_ids)
+def handle_search_request(client, request_args):
+  playlist_name = request_args['playlist_name']
+  video_ids = []
+  for key in request_args.keys():
+    if 'keyword' in key and request_args.get(key):
+      video_ids += playlist_gen.search_youtube(client, request_args.get(key))
+  playlist_id = playlist_gen.create_playlist(client, playlist_name)
+  playlist_gen.insert_videos_into_playlist(client, playlist_id, video_ids)
+  web_links = playlist_gen.create_youtube_links(video_ids)
   return web_links
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
   if 'credentials' not in flask.session:
     return flask.redirect('authorize')
@@ -65,12 +68,10 @@ def index():
       API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
   if request.method == 'POST':
-  	handle_search_request(request.data)
+    links = handle_search_request(client, request.form)
+    return render_template('homepage.html', youtube_links=links)
 
-
-  # todo: Check if post, handle given keywords into youtube file
-  return search_youtube(client, 'the weeknd')
-
+  return 'Hello'
 
 @app.route('/authorize')
 def authorize():
