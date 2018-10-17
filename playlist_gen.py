@@ -2,22 +2,19 @@ def search_youtube(client, search_phrase, count=1):
   """Returns the top video id for a keyword (search phrase)
   param: search_phrase, string: Youtube search term
   param: count, int, optional: Number of ids to return
-  return:
+  return: list of video IDs
   """
-  # you can order by 'relevance' or by 'viewCount'
-  order_by = 'relevance'
 
-  # using the youtube api, search for your video using the keyword 
+  # using the youtube api, search for your video using the keyword
+  # API Function documentation - https://developers.google.com/youtube/v3/docs/search/list 
+  # ToDo: Fill the search function with the proper paramaters (ex: q, type, etc.)
   search_result = client.search().list(
-    q=search_phrase,
-    type="video",
-    part="id",
-    maxResults=15,
-    order=order_by
-    ).execute()
+    # fill in here
+  ).execute()
 
   # initialize empty list to store video IDs in
   video_list =[]
+
   # for loop until we hit our desired video count
   for i in range(count):
     # add the video id to the list
@@ -31,16 +28,14 @@ def create_youtube_links(video_ids):
   param: video_ids, list: List of Youtube video IDs to generate links for
   return: list: List of Youtube video web links
   """
-  # initalize empty list to store youtube video links in
-  links = []
+  
+  # todo: initalize empty list called links to store youtube video links in
 
-  # loop through the list of provided video ids
-  for video_id in video_ids:
-    # generate a web link, and add it to our links list
-    links.append('https://youtu.be/' + video_id)
+  # todo: loop through the list of provided video ids (video_ids)
 
-  # return the list of youtube video web links
-  return links
+    # todo: create a web link string (format is: 'https://youtu.be/videoID'), and append it to our links list
+
+  # todo: return the list of youtube video web links
 
 def create_playlist(client, playlist_name, playlist_description=''):
   """Creates an empty playlist.
@@ -54,30 +49,20 @@ def create_playlist(client, playlist_name, playlist_description=''):
   # We have to format our request with a dictionary like the ones shown in the documentation.
   # See: https://developers.google.com/youtube/v3/docs/playlists/insert
   create_playlist_request_body = {
-    'snippet': {
-      # Name the playlist playlist_name.
-      'title': playlist_name,
-      # Give it the description we want.
-      'description': playlist_description
-    },
-    'status': {
-      # Make the playlist unlisted by default.
-      'privacyStatus': 'public'
-    }
+    # TODO: Add the snippet and the status fields to the request body!
   }
   # Call the insert operation on the YouTube API, using the request object we just created.
   # See: https://developers.google.com/youtube/v3/docs/playlists/insert
   create_playlist_response = client.playlists().insert(
-      part='snippet,status',
-      body=create_playlist_request_body
-    ).execute()
+    part='snippet,status',
+    body=create_playlist_request_body
+  ).execute()
 
   # The code above only creates the playlist.
   # If you have videos to add to the playlist, remember to do that with `insert_videos_into_playlist`!
 
   # If all goes well, there should be no errors, and our requests were successful.
-  # Return the playlist ID.
-  return create_playlist_response['id']
+  # TODO: Return the playlist ID.
 
 def insert_videos_into_playlist(client, playlist_id, video_ids=[]):
   """Inserts videos into an existing playlist.
@@ -91,15 +76,7 @@ def insert_videos_into_playlist(client, playlist_id, video_ids=[]):
     # For each individual video ID, create another request object for the API to consume.
     # See: https://developers.google.com/youtube/v3/docs/playlistItems/insert
     insert_video_request_body = {
-      'snippet': {
-        # Insert this video into the playlist we just created.
-        'playlistId': playlist_id,
-        'resourceId': {
-          'kind': 'youtube#video',
-          # Tell it which video to insert.
-          'videoId': video_id
-        }
-      }
+      # TODO: Add the video snippet!
     }
     # Call the insert operation on the YouTube API, using the request object we just created.
     # See: https://developers.google.com/youtube/v3/docs/playlistItems/insert
